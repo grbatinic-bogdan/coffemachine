@@ -1,8 +1,9 @@
 import React from 'react'
+import './styles.css'
 
 export default ({ name, inputName, isChecked, onChangeHandler }) => {
   return (
-    <>
+    <div className="radio-element">
       <input
         type="radio"
         name={inputName}
@@ -12,6 +13,6 @@ export default ({ name, inputName, isChecked, onChangeHandler }) => {
         checked={isChecked}
       />
       <label htmlFor={name.toLowerCase()}>{name}</label>
-    </>
+    </div>
   )
 }

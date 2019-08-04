@@ -26,6 +26,10 @@ const coffeItems = [
     type: 'coffee',
   },
   {
+    name: 'Ice coffee',
+    type: 'coffee',
+  },
+  {
     name: 'Tea',
     type: 'tea',
   },
