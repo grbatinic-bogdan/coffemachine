@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import ItemFormElement from './ItemFormElement/ItemFormElement'
 import Control from './Control'
 import './index.css'
@@ -6,7 +7,7 @@ import './index.css'
 export const COFFEE_TYPE = 'coffee'
 export const TEA_TYPE = 'tea'
 
-export default ({ items, setFormData }) => {
+export default ({ items, setFormData, setImageData }) => {
   const [beverage, setBeverage] = useState(null)
   const [strength, setStrength] = useState(null)
   const [size, setSize] = useState(null)
@@ -42,7 +43,7 @@ export default ({ items, setFormData }) => {
     setSugar(!sugar)
   }
 
-  const onSubmit = event => {
+  const onSubmit = async event => {
     event.preventDefault()
     const formData = {
       beverage,
@@ -51,6 +52,17 @@ export default ({ items, setFormData }) => {
       milk,
       sugar,
     }
+    try {
+      const imageResponse = await axios.get(
+        `https://api.unsplash.com/photos/random?query=${beverage.name}`,
+        {
+          headers: {
+            Authorization: `Client-ID ${process.env['REACT_APP_UNSPLASH_API_KEY']}`,
+          },
+        },
+      )
+      setImageData(imageResponse.data)
+    } catch (error) {}
 
     setFormData(formData)
   }
