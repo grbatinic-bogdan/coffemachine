@@ -1,58 +1,53 @@
-import React, { useState } from 'react'
+import React from 'react'
 import axios from 'axios'
 import ItemFormElement from './ItemFormElement/ItemFormElement'
 import Control from './Control'
 import './index.css'
+import { pending, success, isPending, isSuccess, failure } from '../../services/remoteData'
+import {
+  SET_BEVERAGE_ACTION,
+  SET_STRENGTH_ACTION,
+  SET_MILK_ACTION,
+  SET_SIZE_ACTION,
+  SET_SUGAR_ACTION,
+} from './reducer'
 
 export const COFFEE_TYPE = 'coffee'
 export const TEA_TYPE = 'tea'
 
-export default ({ items, setFormData, setImageData }) => {
-  const [beverage, setBeverage] = useState(null)
-  const [strength, setStrength] = useState(null)
-  const [size, setSize] = useState(null)
-  const [milk, setMilk] = useState(null)
-  const [sugar, setSugar] = useState(false)
-
+export default ({ items, dispatch, setImageData, imageData, formData }) => {
+  const { beverage, size, strength, milk, sugar } = formData
   const beverageOnChange = event => {
     const foundItem = items.find(item => item.name === event.target.value)
+    dispatch({ type: SET_BEVERAGE_ACTION, data: foundItem })
     if (foundItem) {
-      setBeverage(foundItem)
       if (foundItem.type === TEA_TYPE) {
-        setStrength(null)
-        setMilk(null)
+        dispatch({ type: SET_STRENGTH_ACTION, data: null })
+        dispatch({ type: SET_MILK_ACTION, data: null })
       }
-    } else {
-      setBeverage(null)
     }
   }
 
   const strengthOnChange = event => {
-    setStrength(event.target.value)
+    dispatch({ type: SET_STRENGTH_ACTION, data: event.target.value })
   }
 
   const sizeOnChange = event => {
-    setSize(event.target.value)
+    dispatch({ type: SET_SIZE_ACTION, data: event.target.value })
   }
 
   const milkOnChange = event => {
-    setMilk(event.target.value)
+    dispatch({ type: SET_MILK_ACTION, data: event.target.value })
   }
 
   const sugarOnChange = () => {
-    setSugar(!sugar)
+    dispatch({ type: SET_SUGAR_ACTION })
   }
 
   const onSubmit = async event => {
     event.preventDefault()
-    const formData = {
-      beverage,
-      strength,
-      size,
-      milk,
-      sugar,
-    }
     try {
+      setImageData(pending())
       const imageResponse = await axios.get(
         `https://api.unsplash.com/photos/random?query=${beverage.name}`,
         {
@@ -61,10 +56,10 @@ export default ({ items, setFormData, setImageData }) => {
           },
         },
       )
-      setImageData(imageResponse.data)
-    } catch (error) {}
-
-    setFormData(formData)
+      setImageData(success(imageResponse.data))
+    } catch (error) {
+      setImageData(failure("Unable to create coffe, we're sorry :("))
+    }
   }
 
   const showSubmitButton = () => {
@@ -86,6 +81,15 @@ export default ({ items, setFormData, setImageData }) => {
   const showSubmit = showSubmitButton()
 
   const showMilk = beverage && beverage.type === COFFEE_TYPE
+
+  if (isSuccess(imageData) && formData !== null) {
+    return null
+  }
+
+  if (isPending(imageData)) {
+    return <h1>Brewing your {beverage.type}, please wait</h1>
+  }
+
   return (
     <form onSubmit={onSubmit}>
       <div className="form-container">
