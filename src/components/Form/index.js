@@ -16,13 +16,6 @@ export const COFFEE_TYPE = 'coffee'
 export const TEA_TYPE = 'tea'
 
 export default ({ items, dispatch, setImageData, imageData, formData }) => {
-  /*
-  const [beverage, setBeverage] = useState(null)
-  const [strength, setStrength] = useState(null)
-  const [size, setSize] = useState(null)
-  const [milk, setMilk] = useState(null)
-  const [sugar, setSugar] = useState(false)
-  */
   const { beverage, size, strength, milk, sugar } = formData
   const beverageOnChange = event => {
     const foundItem = items.find(item => item.name === event.target.value)

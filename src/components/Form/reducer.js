@@ -1,3 +1,5 @@
+import { notAsked } from '../../services/remoteData'
+
 export const SET_BEVERAGE_ACTION = 'SET_BEVERAGE'
 export const SET_STRENGTH_ACTION = 'SET_STRENGTH'
 export const SET_SIZE_ACTION = 'SET_SIZE'
@@ -6,10 +8,10 @@ export const SET_SUGAR_ACTION = 'SET_SUGAR'
 export const RESET_COFFEE_MACHINE_ACTION = 'RESET_COFFEE_MACHINE'
 
 export const initialState = {
-  beverage: null,
-  strength: null,
-  size: null,
-  milk: null,
+  beverage: notAsked(),
+  strength: notAsked(),
+  size: notAsked(),
+  milk: notAsked(),
   sugar: false,
 }
 
