@@ -1,10 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import * as serviceWorker from './serviceWorker'
+
 import Container from './components/Container'
 
-const coffeItems = [
+export type BeverageType = 'coffee' | 'tea'
+
+export interface IBeverageItem {
+  name: string
+  type: BeverageType
+}
+
+const coffeItems: IBeverageItem[] = [
   {
     name: 'Coffee',
     type: 'coffee',
@@ -39,9 +45,4 @@ const coffeItems = [
   },
 ]
 
-ReactDOM.render(<Container items={coffeItems} />, document.getElementById('root'))
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister()
+ReactDOM.render(<Container items={coffeItems} />, document.getElementById('app'))

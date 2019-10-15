@@ -1,13 +1,18 @@
 import React, { useState, useReducer } from 'react'
 import Form from '../Form'
-import BeverageResponse from '../BeverageResponse'
+import BeverageResponse, { IImageDataResponse } from '../BeverageResponse'
 import './style.css'
-import { notAsked } from '../../services/remoteData'
+import { notAsked, IRemoteData } from '../../services/remoteData'
 import { formDataReducer, initialState } from '../Form/reducer'
+import { IBeverageItem } from '../..'
 
-export default ({ items }) => {
+interface IContainerProps {
+  items: IBeverageItem[]
+}
+
+export default ({ items }: IContainerProps) => {
   const [formData, dispatch] = useReducer(formDataReducer, initialState)
-  const [imageData, setImageData] = useState(notAsked())
+  const [imageData, setImageData] = useState<IRemoteData<IImageDataResponse, string>>(notAsked())
   return (
     <div className="app-container">
       <Form

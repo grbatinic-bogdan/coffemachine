@@ -3,21 +3,41 @@ import axios from 'axios'
 import ItemFormElement from './ItemFormElement/ItemFormElement'
 import Control from './Control'
 import './index.css'
-import { pending, success, isPending, isSuccess, failure } from '../../services/remoteData'
+import {
+  pending,
+  success,
+  isPending,
+  isSuccess,
+  failure,
+  IRemoteData,
+  isNotAsked,
+} from '../../services/remoteData'
 import {
   SET_BEVERAGE_ACTION,
   SET_STRENGTH_ACTION,
   SET_MILK_ACTION,
   SET_SIZE_ACTION,
   SET_SUGAR_ACTION,
+  IActionType,
+  IFormReducerState,
 } from './reducer'
+import { IBeverageItem } from '../..'
+import { IImageDataResponse } from '../BeverageResponse'
 
 export const COFFEE_TYPE = 'coffee'
 export const TEA_TYPE = 'tea'
 
-export default ({ items, dispatch, setImageData, imageData, formData }) => {
+interface IFormProps {
+  items: IBeverageItem[]
+  dispatch: React.Dispatch<IActionType>
+  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<IImageDataResponse, string>>>
+  imageData: IRemoteData<IImageDataResponse, string>
+  formData: IFormReducerState
+}
+
+export default ({ items, dispatch, setImageData, imageData, formData }: IFormProps) => {
   const { beverage, size, strength, milk, sugar } = formData
-  const beverageOnChange = event => {
+  const beverageOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const foundItem = items.find(item => item.name === event.target.value)
     dispatch({ type: SET_BEVERAGE_ACTION, data: foundItem })
     if (foundItem) {
@@ -28,15 +48,15 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
     }
   }
 
-  const strengthOnChange = event => {
+  const strengthOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: SET_STRENGTH_ACTION, data: event.target.value })
   }
 
-  const sizeOnChange = event => {
+  const sizeOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: SET_SIZE_ACTION, data: event.target.value })
   }
 
-  const milkOnChange = event => {
+  const milkOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: SET_MILK_ACTION, data: event.target.value })
   }
 
@@ -44,43 +64,46 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
     dispatch({ type: SET_SUGAR_ACTION })
   }
 
-  const onSubmit = async event => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    try {
-      setImageData(pending())
-      const imageResponse = await axios.get(
-        `https://api.unsplash.com/photos/random?query=${beverage.name}`,
-        {
-          headers: {
-            Authorization: `Client-ID ${process.env['REACT_APP_UNSPLASH_API_KEY']}`,
+    if (isSuccess(beverage)) {
+      try {
+        setImageData(pending())
+        const imageResponse = await axios.get(
+          `https://api.unsplash.com/photos/random?query=${beverage.data.name}`,
+          {
+            headers: {
+              Authorization: `Client-ID ${process.env.UNSPLASH_API_KEY}`,
+            },
           },
-        },
-      )
-      setImageData(success(imageResponse.data))
-    } catch (error) {
-      setImageData(failure("Unable to create coffe, we're sorry :("))
+        )
+        setImageData(success(imageResponse.data))
+      } catch (error) {
+        setImageData(failure("Unable to create coffe, we're sorry :("))
+      }
     }
   }
 
   const showSubmitButton = () => {
-    const hasBeverage = beverage !== null
-    const hasSize = size !== null
+    //const hasBeverage = isSuccess<IBeverageItem, string>(beverage)
+    //const hasSize = size !== null
     const hasStrength =
-      beverage &&
-      ((beverage.type === COFFEE_TYPE && strength !== null) ||
-        (beverage.type === TEA_TYPE && strength === null))
+      isSuccess<IBeverageItem, string>(beverage) &&
+      ((beverage.data.type === 'coffee' && isSuccess(strength)) ||
+        (beverage.data.type === 'tea' && isNotAsked(strength)))
     const hasMilk =
-      beverage &&
-      ((beverage.type === COFFEE_TYPE && milk !== null) ||
-        (beverage.type === TEA_TYPE && milk === null))
+      isSuccess<IBeverageItem, string>(beverage) &&
+      ((beverage.data.type === 'coffee' && isSuccess(milk)) ||
+        (beverage.data.type === 'tea' && isNotAsked(milk)))
 
-    return hasBeverage && hasSize && hasStrength && hasMilk
+    return isSuccess<IBeverageItem, string>(beverage) && isSuccess(size) && hasStrength && hasMilk
   }
 
-  const showStrength = beverage && beverage.type === COFFEE_TYPE
+  const showStrength =
+    isSuccess<IBeverageItem, string>(beverage) && beverage.data.type === COFFEE_TYPE
   const showSubmit = showSubmitButton()
 
-  const showMilk = beverage && beverage.type === COFFEE_TYPE
+  const showMilk = isSuccess<IBeverageItem, string>(beverage) && beverage.data.type === COFFEE_TYPE
 
   if (isSuccess(imageData) && formData !== null) {
     return null
@@ -96,7 +119,8 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
         <section className="beverages-column">
           <p className="beverage-select-heading">Select your beverage</p>
           {items.map(item => {
-            const checked = beverage && beverage.name === item.name
+            const checked =
+              isSuccess<IBeverageItem, string>(beverage) && beverage.data.name === item.name
             return (
               <ItemFormElement
                 key={item.name}
@@ -117,7 +141,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
                   name="strength"
                   id="lowstrength"
                   value="Low"
-                  isChecked={strength === 'Low'}
+                  checked={isSuccess(strength) && strength.data === 'Low'}
                   onChange={strengthOnChange}
                   label="Low"
                 />
@@ -125,7 +149,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
                   name="strength"
                   id="normalstrength"
                   value="Normal"
-                  isChecked={strength === 'Normal'}
+                  checked={isSuccess(strength) && strength.data === 'Normal'}
                   onChange={strengthOnChange}
                   label="Normal"
                 />
@@ -133,7 +157,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
                   name="strength"
                   id="strongstrength"
                   value="Strong"
-                  isChecked={strength === 'Strong'}
+                  checked={isSuccess(strength) && strength.data === 'Strong'}
                   onChange={strengthOnChange}
                   label="Strong"
                 />
@@ -146,7 +170,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
               name="size"
               id="smallsize"
               value="Small"
-              isChecked={size === 'Small'}
+              checked={isSuccess(size) && size.data === 'Small'}
               onChange={sizeOnChange}
               label="Small"
             />
@@ -154,7 +178,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
               name="size"
               id="normalsize"
               value="Normal"
-              isChecked={size === 'Normal'}
+              checked={isSuccess(size) && size.data === 'Normal'}
               onChange={sizeOnChange}
               label="Normal"
             />
@@ -162,7 +186,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
               name="size"
               id="largesize"
               value="Large"
-              isChecked={size === 'Large'}
+              checked={isSuccess(size) && size.data === 'Large'}
               onChange={sizeOnChange}
               label="Large"
             />
@@ -175,7 +199,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
                   name="milk"
                   id="nomilk"
                   value="No"
-                  isChecked={milk === 'No'}
+                  checked={isSuccess(milk) && milk.data === 'No'}
                   onChange={milkOnChange}
                   label="No"
                 />
@@ -183,7 +207,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
                   name="milk"
                   id="normalmilk"
                   value="Normal"
-                  isChecked={milk === 'Normal'}
+                  checked={isSuccess(milk) && milk.data === 'Normal'}
                   onChange={milkOnChange}
                   label="Normal"
                 />
@@ -191,7 +215,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }) => {
                   name="milk"
                   id="largemilk"
                   value="Large"
-                  isChecked={milk === 'Large'}
+                  checked={isSuccess(milk) && milk.data === 'Large'}
                   onChange={milkOnChange}
                   label="Large"
                 />

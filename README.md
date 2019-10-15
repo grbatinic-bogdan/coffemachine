@@ -1,13 +1,33 @@
 ## Simple coffee machine playground project
 
-Uses [Unsplash](https://unsplash.com/) for delivering random images of coffee
+Uses [Unsplash](https://unsplash.com/) api for delivering random images of coffee/tea
 
-So, in order to use the app, create `.env` base on `env.example` file, and add your unsplash values
+So, in order to use the app, create `.env` based on `env.example` file, and add your unsplash values
 
-## Install dependencies
+## Building and running on localhost
 
-`npm install`
+First install dependencies:
 
-## Start the app
+```sh
+npm install
+```
 
-`npm start`
+To run in hot module reloading mode:
+
+```sh
+npm start
+```
+
+To create a production build:
+
+```sh
+npm run build-prod
+```
+
+## Running
+
+Open the file `dist/index.html` in your browser
+
+## Credits
+
+Made with [createapp.dev](https://createapp.dev/)
