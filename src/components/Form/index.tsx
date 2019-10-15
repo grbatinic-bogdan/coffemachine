@@ -10,6 +10,7 @@ import {
   isSuccess,
   failure,
   IRemoteData,
+  isNotAsked,
 } from '../../services/remoteData'
 import {
   SET_BEVERAGE_ACTION,
@@ -84,18 +85,18 @@ export default ({ items, dispatch, setImageData, imageData, formData }: IFormPro
   }
 
   const showSubmitButton = () => {
-    const hasBeverage = isSuccess<IBeverageItem, string>(beverage)
-    const hasSize = size !== null
+    //const hasBeverage = isSuccess<IBeverageItem, string>(beverage)
+    //const hasSize = size !== null
     const hasStrength =
       isSuccess<IBeverageItem, string>(beverage) &&
-      ((beverage.data.type === COFFEE_TYPE && strength !== null) ||
-        (beverage.data.type === TEA_TYPE && strength === null))
+      ((beverage.data.type === 'coffee' && isSuccess(strength)) ||
+        (beverage.data.type === 'tea' && isNotAsked(strength)))
     const hasMilk =
       isSuccess<IBeverageItem, string>(beverage) &&
-      ((beverage.data.type === COFFEE_TYPE && milk !== null) ||
-        (beverage.data.type === TEA_TYPE && milk === null))
+      ((beverage.data.type === 'coffee' && isSuccess(milk)) ||
+        (beverage.data.type === 'tea' && isNotAsked(milk)))
 
-    return hasBeverage && hasSize && hasStrength && hasMilk
+    return isSuccess<IBeverageItem, string>(beverage) && isSuccess(size) && hasStrength && hasMilk
   }
 
   const showStrength =

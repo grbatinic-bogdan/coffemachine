@@ -1,4 +1,4 @@
-import { notAsked, IRemoteData } from '../../services/remoteData'
+import { notAsked, IRemoteData, success } from '../../services/remoteData'
 import { IBeverageItem } from '../..'
 
 export const SET_BEVERAGE_ACTION = 'SET_BEVERAGE'
@@ -8,6 +8,7 @@ export const SET_MILK_ACTION = 'SET_MILK'
 export const SET_SUGAR_ACTION = 'SET_SUGAR'
 export const RESET_COFFEE_MACHINE_ACTION = 'RESET_COFFEE_MACHINE'
 
+/*
 export type LowStrength = 'Low'
 export type NormalStrength = 'Normal'
 export type StrongStrength = 'Strong'
@@ -19,6 +20,7 @@ export type LargeSize = 'Large'
 export type NoMilk = 'No'
 export type NormalMilk = 'Normal'
 export type LargeMilk = 'Large'
+*/
 
 export type Strength = 'Low' | 'Normal' | 'Strong'
 export type Size = 'Small' | 'Normal' | 'Large'
@@ -61,38 +63,28 @@ export interface IActionType {
 }
 
 export function formDataReducer(state: IFormReducerState, action: IActionType): IFormReducerState {
+  const isSuccess = action.data !== null
+  const data = isSuccess ? success(action.data) : notAsked()
   switch (action.type) {
     case SET_BEVERAGE_ACTION:
       return {
         ...state,
-        beverage: {
-          type: 'SUCCESS',
-          data: action.data,
-        },
+        beverage: data,
       }
     case SET_SIZE_ACTION:
       return {
         ...state,
-        size: {
-          type: 'SUCCESS',
-          data: action.data,
-        },
+        size: data,
       }
     case SET_STRENGTH_ACTION:
       return {
         ...state,
-        strength: {
-          type: 'SUCCESS',
-          data: action.data,
-        },
+        strength: data,
       }
     case SET_MILK_ACTION:
       return {
         ...state,
-        milk: {
-          type: 'SUCCESS',
-          data: action.data,
-        },
+        milk: data,
       }
     case SET_SUGAR_ACTION:
       return {
