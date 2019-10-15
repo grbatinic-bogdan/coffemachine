@@ -24,3 +24,8 @@ yarn-debug.log*
 yarn-error.log*
 
 /.vscode
+
+typescript-temp/node_modules
+typescript-temp/dist
+typescript-temp/.cache
+typescript-temp/.env
