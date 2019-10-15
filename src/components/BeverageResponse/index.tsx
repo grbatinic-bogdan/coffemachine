@@ -1,8 +1,8 @@
 import React from 'react'
 import { isSuccess, notAsked, IRemoteData } from '../../services/remoteData'
-import { RESET_COFFEE_MACHINE_ACTION, IFormReducerState, IActionType } from '../Form/reducer'
+import { RESET_COFFEE_MACHINE_ACTION, FormReducerState, ActionType } from '../Form/reducer'
 
-export interface IImageDataResponse {
+export interface ImageDataResponse {
   urls: {
     raw: string
     full: string
@@ -23,19 +23,19 @@ export interface IImageDataResponse {
   alt_description: string
 }
 
-interface IBeverageResponseProps {
-  beverageData: IFormReducerState
-  imageRemoteData: IRemoteData<IImageDataResponse, string>
-  dispatch: React.Dispatch<IActionType>
-  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<IImageDataResponse, string>>>
+interface BeverageResponseProps {
+  beverageData: FormReducerState
+  imageRemoteData: IRemoteData<ImageDataResponse, string>
+  dispatch: React.Dispatch<ActionType>
+  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<ImageDataResponse, string>>>
 }
 
-export default ({
+export default function BeverageResponse({
   beverageData,
   imageRemoteData,
   dispatch,
   setImageData,
-}: IBeverageResponseProps) => {
+}: BeverageResponseProps): React.FunctionComponentElement<BeverageResponseProps> | null {
   const { beverage, strength, size, milk, sugar } = beverageData
 
   if (
@@ -76,7 +76,7 @@ export default ({
         </a>
       </p>
       <button
-        onClick={() => {
+        onClick={(): void => {
           dispatch({ type: RESET_COFFEE_MACHINE_ACTION })
           setImageData(notAsked())
         }}

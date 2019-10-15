@@ -8,25 +8,11 @@ export const SET_MILK_ACTION = 'SET_MILK'
 export const SET_SUGAR_ACTION = 'SET_SUGAR'
 export const RESET_COFFEE_MACHINE_ACTION = 'RESET_COFFEE_MACHINE'
 
-/*
-export type LowStrength = 'Low'
-export type NormalStrength = 'Normal'
-export type StrongStrength = 'Strong'
-
-export type SmallSize = 'Small'
-export type NormalSize = 'Normal'
-export type LargeSize = 'Large'
-
-export type NoMilk = 'No'
-export type NormalMilk = 'Normal'
-export type LargeMilk = 'Large'
-*/
-
 export type Strength = 'Low' | 'Normal' | 'Strong'
 export type Size = 'Small' | 'Normal' | 'Large'
 export type Milk = 'No' | 'Normal' | 'Large'
 
-export interface IFormReducerState {
+export interface FormReducerState {
   beverage: IRemoteData<IBeverageItem, string>
   strength: IRemoteData<Strength, string>
   size: IRemoteData<Size, string>
@@ -49,7 +35,7 @@ type FormReducerActions =
   | SetSugar
   | ResetCoffeeMachine
 
-export const initialState: IFormReducerState = {
+export const initialState: FormReducerState = {
   beverage: notAsked(),
   strength: notAsked(),
   size: notAsked(),
@@ -57,12 +43,12 @@ export const initialState: IFormReducerState = {
   sugar: false,
 }
 
-export interface IActionType {
+export interface ActionType {
   type: FormReducerActions
   data?: any
 }
 
-export function formDataReducer(state: IFormReducerState, action: IActionType): IFormReducerState {
+export function formDataReducer(state: FormReducerState, action: ActionType): FormReducerState {
   const isSuccess = action.data !== null
   const data = isSuccess ? success(action.data) : notAsked()
   switch (action.type) {

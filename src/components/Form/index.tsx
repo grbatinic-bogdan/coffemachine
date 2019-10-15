@@ -18,26 +18,32 @@ import {
   SET_MILK_ACTION,
   SET_SIZE_ACTION,
   SET_SUGAR_ACTION,
-  IActionType,
-  IFormReducerState,
+  ActionType,
+  FormReducerState,
 } from './reducer'
 import { IBeverageItem } from '../..'
-import { IImageDataResponse } from '../BeverageResponse'
+import { ImageDataResponse } from '../BeverageResponse'
 
 export const COFFEE_TYPE = 'coffee'
 export const TEA_TYPE = 'tea'
 
-interface IFormProps {
+interface FormProps {
   items: IBeverageItem[]
-  dispatch: React.Dispatch<IActionType>
-  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<IImageDataResponse, string>>>
-  imageData: IRemoteData<IImageDataResponse, string>
-  formData: IFormReducerState
+  dispatch: React.Dispatch<ActionType>
+  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<ImageDataResponse, string>>>
+  imageData: IRemoteData<ImageDataResponse, string>
+  formData: FormReducerState
 }
 
-export default ({ items, dispatch, setImageData, imageData, formData }: IFormProps) => {
+export default function Form({
+  items,
+  dispatch,
+  setImageData,
+  imageData,
+  formData,
+}: FormProps): React.FunctionComponentElement<FormProps> | null {
   const { beverage, size, strength, milk, sugar } = formData
-  const beverageOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const beverageOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const foundItem = items.find(item => item.name === event.target.value)
     dispatch({ type: SET_BEVERAGE_ACTION, data: foundItem })
     if (foundItem) {
@@ -48,23 +54,23 @@ export default ({ items, dispatch, setImageData, imageData, formData }: IFormPro
     }
   }
 
-  const strengthOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const strengthOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch({ type: SET_STRENGTH_ACTION, data: event.target.value })
   }
 
-  const sizeOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const sizeOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch({ type: SET_SIZE_ACTION, data: event.target.value })
   }
 
-  const milkOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const milkOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch({ type: SET_MILK_ACTION, data: event.target.value })
   }
 
-  const sugarOnChange = () => {
+  const sugarOnChange = (): void => {
     dispatch({ type: SET_SUGAR_ACTION })
   }
 
-  const onSubmit = async (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault()
     if (isSuccess(beverage)) {
       try {
@@ -84,7 +90,7 @@ export default ({ items, dispatch, setImageData, imageData, formData }: IFormPro
     }
   }
 
-  const showSubmitButton = () => {
+  const showSubmitButton = (): boolean => {
     //const hasBeverage = isSuccess<IBeverageItem, string>(beverage)
     //const hasSize = size !== null
     const hasStrength =

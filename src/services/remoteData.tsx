@@ -5,47 +5,47 @@
 
 export type IRemoteDataType = 'NOT_ASKED' | 'PENDING' | 'SUCCESS' | 'FAILURE'
 
-interface IRemoteDataNotAsked {
+interface RemoteDataNotAsked {
   type: 'NOT_ASKED'
 }
-interface IRemoteDataPending {
+interface RemoteDataPending {
   type: 'PENDING'
 }
-interface IRemoteDataSuccess<T> {
+interface RemoteDataSuccess<T> {
   type: 'SUCCESS'
   data: T
 }
-interface IRemoteDataFailure<E> {
+interface RemoteDataFailure<E> {
   type: 'FAILURE'
   error: E
 }
 
 export type IRemoteData<T, E> =
-  | IRemoteDataNotAsked
-  | IRemoteDataPending
-  | IRemoteDataSuccess<T>
-  | IRemoteDataFailure<E>
+  | RemoteDataNotAsked
+  | RemoteDataPending
+  | RemoteDataSuccess<T>
+  | RemoteDataFailure<E>
 
-export const notAsked = (): IRemoteDataNotAsked => {
+export const notAsked = (): RemoteDataNotAsked => {
   return {
     type: 'NOT_ASKED',
   }
 }
 
-export const pending = (): IRemoteDataPending => {
+export const pending = (): RemoteDataPending => {
   return {
     type: 'PENDING',
   }
 }
 
-export function success<T>(data: T): IRemoteDataSuccess<T> {
+export function success<T>(data: T): RemoteDataSuccess<T> {
   return {
     type: 'SUCCESS',
     data,
   }
 }
 
-export function failure<T>(error: T): IRemoteDataFailure<T> {
+export function failure<T>(error: T): RemoteDataFailure<T> {
   return {
     type: 'FAILURE',
     error,
@@ -54,25 +54,23 @@ export function failure<T>(error: T): IRemoteDataFailure<T> {
 
 export const isNotAsked = <T, E>(
   remoteData: IRemoteData<T, E>,
-): remoteData is IRemoteDataNotAsked => {
+): remoteData is RemoteDataNotAsked => {
   return remoteData.type === 'NOT_ASKED'
 }
 
-export const isPending = <T, E>(
-  remoteData: IRemoteData<T, E>,
-): remoteData is IRemoteDataPending => {
+export const isPending = <T, E>(remoteData: IRemoteData<T, E>): remoteData is RemoteDataPending => {
   return remoteData.type === 'PENDING'
 }
 
 export const isSuccess = <T, E>(
   remoteData: IRemoteData<T, E>,
-): remoteData is IRemoteDataSuccess<T> => {
+): remoteData is RemoteDataSuccess<T> => {
   return remoteData.type === 'SUCCESS'
 }
 
 export const isFailure = <T, E>(
   remoteData: IRemoteData<T, E>,
-): remoteData is IRemoteDataFailure<E> => {
+): remoteData is RemoteDataFailure<E> => {
   return remoteData.type === 'FAILURE'
 }
 
