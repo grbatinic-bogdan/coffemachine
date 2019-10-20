@@ -1,14 +1,19 @@
 import React from 'react'
 import './styles.css'
 
-interface IItemFormElementProps {
+interface ItemFormElementProps {
   name: string
   inputName: string
   checked: boolean
   onChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default ({ name, inputName, checked, onChangeHandler }: IItemFormElementProps) => {
+export default function ItemFormElement({
+  name,
+  inputName,
+  checked,
+  onChangeHandler,
+}: ItemFormElementProps): React.FunctionComponentElement<ItemFormElementProps> {
   return (
     <div className="radio-element">
       <input

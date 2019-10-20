@@ -1,8 +1,9 @@
 import React from 'react'
 import { isSuccess, notAsked, IRemoteData } from '../../services/remoteData'
-import { RESET_COFFEE_MACHINE_ACTION, IFormReducerState, IActionType } from '../Form/reducer'
+import { FormReducerState } from '../Form/reducer'
+import { ActionTypes, resetCoffeeMachine } from '../Form/reducer/actions'
 
-export interface IImageDataResponse {
+export interface ImageDataResponse {
   urls: {
     raw: string
     full: string
@@ -23,38 +24,32 @@ export interface IImageDataResponse {
   alt_description: string
 }
 
-interface IBeverageResponseProps {
-  beverageData: IFormReducerState
-  imageRemoteData: IRemoteData<IImageDataResponse, string>
-  dispatch: React.Dispatch<IActionType>
-  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<IImageDataResponse, string>>>
+interface BeverageResponseProps {
+  beverageData: FormReducerState
+  imageRemoteData: IRemoteData<ImageDataResponse, string>
+  dispatch: React.Dispatch<ActionTypes>
+  setImageData: React.Dispatch<React.SetStateAction<IRemoteData<ImageDataResponse, string>>>
 }
 
-export default ({
+export default function BeverageResponse({
   beverageData,
   imageRemoteData,
   dispatch,
   setImageData,
-}: IBeverageResponseProps) => {
+}: BeverageResponseProps): React.FunctionComponentElement<BeverageResponseProps> | null {
   const { beverage, strength, size, milk, sugar } = beverageData
 
-  if (
-    !isSuccess(imageRemoteData) ||
-    !isSuccess(beverage) ||
-    !isSuccess(strength) ||
-    !isSuccess(size) ||
-    !isSuccess(milk)
-  ) {
+  if (!isSuccess(imageRemoteData) || beverage === undefined || size === undefined) {
     return null
   }
 
   const { data: imageData } = imageRemoteData
   return (
     <div>
-      <h1>You ordered {beverage.data.name}</h1>
-      <p>Size: {size.data}</p>
-      {strength.data && <p>Strength: {strength.data}</p>}
-      {milk.data && <p>Milk: {milk.data}</p>}
+      <h1>You ordered {beverage.name}</h1>
+      <p>Size: {size}</p>
+      {strength && <p>Strength: {strength}</p>}
+      {milk && <p>Milk: {milk}</p>}
       <p>Sugar: {sugar ? 'Yes' : 'No'}</p>
 
       {imageData && imageData.urls && imageData.urls.regular && (
@@ -76,8 +71,8 @@ export default ({
         </a>
       </p>
       <button
-        onClick={() => {
-          dispatch({ type: RESET_COFFEE_MACHINE_ACTION })
+        onClick={(): void => {
+          dispatch(resetCoffeeMachine())
           setImageData(notAsked())
         }}
       >

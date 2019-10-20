@@ -5,12 +5,12 @@ import Container from './components/Container'
 
 export type BeverageType = 'coffee' | 'tea'
 
-export interface IBeverageItem {
+export interface BeverageItem {
   name: string
   type: BeverageType
 }
 
-const coffeItems: IBeverageItem[] = [
+const coffeItems: BeverageItem[] = [
   {
     name: 'Coffee',
     type: 'coffee',

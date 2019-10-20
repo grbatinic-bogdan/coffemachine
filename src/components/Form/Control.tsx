@@ -1,7 +1,7 @@
 import React from 'react'
 import './ItemFormElement/styles.css'
 
-interface IControlProps {
+interface ControlProps {
   name: string
   id: string
   value: string
@@ -10,7 +10,14 @@ interface IControlProps {
   label: string
 }
 
-export default ({ name, id, value, checked, onChange, label }: IControlProps) => {
+export default function Control({
+  name,
+  id,
+  value,
+  checked,
+  onChange,
+  label,
+}: ControlProps): React.FunctionComponentElement<ControlProps> {
   return (
     <div className="radio-element">
       <input type="radio" name={name} id={id} value={value} checked={checked} onChange={onChange} />
