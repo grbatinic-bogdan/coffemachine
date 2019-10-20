@@ -1,6 +1,7 @@
 import React from 'react'
 import { isSuccess, notAsked, IRemoteData } from '../../services/remoteData'
-import { RESET_COFFEE_MACHINE_ACTION, FormReducerState, ActionType } from '../Form/reducer'
+import { FormReducerState } from '../Form/reducer'
+import { ActionTypes, resetCoffeeMachine } from '../Form/reducer/actions'
 
 export interface ImageDataResponse {
   urls: {
@@ -26,7 +27,7 @@ export interface ImageDataResponse {
 interface BeverageResponseProps {
   beverageData: FormReducerState
   imageRemoteData: IRemoteData<ImageDataResponse, string>
-  dispatch: React.Dispatch<ActionType>
+  dispatch: React.Dispatch<ActionTypes>
   setImageData: React.Dispatch<React.SetStateAction<IRemoteData<ImageDataResponse, string>>>
 }
 
@@ -40,8 +41,8 @@ export default function BeverageResponse({
 
   if (
     !isSuccess(imageRemoteData) ||
-    !isSuccess(beverage) ||
-    !isSuccess(strength) ||
+    beverage === undefined ||
+    strength === undefined ||
     !isSuccess(size) ||
     !isSuccess(milk)
   ) {
@@ -51,9 +52,9 @@ export default function BeverageResponse({
   const { data: imageData } = imageRemoteData
   return (
     <div>
-      <h1>You ordered {beverage.data.name}</h1>
+      <h1>You ordered {beverage && beverage.name}</h1>
       <p>Size: {size.data}</p>
-      {strength.data && <p>Strength: {strength.data}</p>}
+      {strength && <p>Strength: {strength}</p>}
       {milk.data && <p>Milk: {milk.data}</p>}
       <p>Sugar: {sugar ? 'Yes' : 'No'}</p>
 
@@ -77,7 +78,7 @@ export default function BeverageResponse({
       </p>
       <button
         onClick={(): void => {
-          dispatch({ type: RESET_COFFEE_MACHINE_ACTION })
+          dispatch(resetCoffeeMachine())
           setImageData(notAsked())
         }}
       >

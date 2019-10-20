@@ -12,24 +12,29 @@ import {
   IRemoteData,
   isNotAsked,
 } from '../../services/remoteData'
-import {
-  SET_BEVERAGE_ACTION,
-  SET_STRENGTH_ACTION,
-  SET_MILK_ACTION,
-  SET_SIZE_ACTION,
-  SET_SUGAR_ACTION,
-  ActionType,
-  FormReducerState,
-} from './reducer'
-import { IBeverageItem } from '../..'
+import { FormReducerState } from './reducer'
+import { BeverageItem } from '../..'
 import { ImageDataResponse } from '../BeverageResponse'
+import {
+  ActionTypes,
+  setBeverage,
+  unsetStrengthAction,
+  unsetMilkAction,
+  setStrength,
+  Strength,
+  setSize,
+  Size,
+  setMilk,
+  Milk,
+  toggleSugar,
+} from './reducer/actions'
 
 export const COFFEE_TYPE = 'coffee'
 export const TEA_TYPE = 'tea'
 
 interface FormProps {
-  items: IBeverageItem[]
-  dispatch: React.Dispatch<ActionType>
+  items: BeverageItem[]
+  dispatch: React.Dispatch<ActionTypes>
   setImageData: React.Dispatch<React.SetStateAction<IRemoteData<ImageDataResponse, string>>>
   imageData: IRemoteData<ImageDataResponse, string>
   formData: FormReducerState
@@ -43,40 +48,43 @@ export default function Form({
   formData,
 }: FormProps): React.FunctionComponentElement<FormProps> | null {
   const { beverage, size, strength, milk, sugar } = formData
+
   const beverageOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const foundItem = items.find(item => item.name === event.target.value)
-    dispatch({ type: SET_BEVERAGE_ACTION, data: foundItem })
+    if (foundItem) {
+      dispatch(setBeverage(foundItem))
+    }
     if (foundItem) {
       if (foundItem.type === TEA_TYPE) {
-        dispatch({ type: SET_STRENGTH_ACTION, data: null })
-        dispatch({ type: SET_MILK_ACTION, data: null })
+        dispatch(unsetStrengthAction())
+        dispatch(unsetMilkAction())
       }
     }
   }
 
   const strengthOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch({ type: SET_STRENGTH_ACTION, data: event.target.value })
+    dispatch(setStrength(event.target.value as Strength))
   }
 
   const sizeOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch({ type: SET_SIZE_ACTION, data: event.target.value })
+    dispatch(setSize(event.target.value as Size))
   }
 
   const milkOnChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch({ type: SET_MILK_ACTION, data: event.target.value })
+    dispatch(setMilk(event.target.value as Milk))
   }
 
   const sugarOnChange = (): void => {
-    dispatch({ type: SET_SUGAR_ACTION })
+    dispatch(toggleSugar())
   }
 
   const onSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault()
-    if (isSuccess(beverage)) {
+    if (beverage) {
       try {
         setImageData(pending())
         const imageResponse = await axios.get(
-          `https://api.unsplash.com/photos/random?query=${beverage.data.name}`,
+          `https://api.unsplash.com/photos/random?query=${beverage.name}`,
           {
             headers: {
               Authorization: `Client-ID ${process.env.UNSPLASH_API_KEY}`,
@@ -91,31 +99,29 @@ export default function Form({
   }
 
   const showSubmitButton = (): boolean => {
-    //const hasBeverage = isSuccess<IBeverageItem, string>(beverage)
-    //const hasSize = size !== null
-    const hasStrength =
-      isSuccess<IBeverageItem, string>(beverage) &&
-      ((beverage.data.type === 'coffee' && isSuccess(strength)) ||
-        (beverage.data.type === 'tea' && isNotAsked(strength)))
-    const hasMilk =
-      isSuccess<IBeverageItem, string>(beverage) &&
-      ((beverage.data.type === 'coffee' && isSuccess(milk)) ||
-        (beverage.data.type === 'tea' && isNotAsked(milk)))
+    const isStrengthSelected = strength !== undefined
+    const hasStrength: boolean =
+      beverage !== undefined &&
+      ((beverage.type === 'coffee' && isStrengthSelected) ||
+        (beverage.type === 'tea' && isStrengthSelected))
+    const hasMilk: boolean =
+      beverage !== undefined &&
+      ((beverage.type === 'coffee' && isSuccess(milk)) ||
+        (beverage.type === 'tea' && isNotAsked(milk)))
 
-    return isSuccess<IBeverageItem, string>(beverage) && isSuccess(size) && hasStrength && hasMilk
+    return beverage !== undefined && isSuccess(size) && hasStrength && hasMilk
   }
 
-  const showStrength =
-    isSuccess<IBeverageItem, string>(beverage) && beverage.data.type === COFFEE_TYPE
+  const showStrength: boolean = beverage !== undefined && beverage.type === COFFEE_TYPE
   const showSubmit = showSubmitButton()
 
-  const showMilk = isSuccess<IBeverageItem, string>(beverage) && beverage.data.type === COFFEE_TYPE
+  const showMilk = beverage !== undefined && beverage.type === COFFEE_TYPE
 
   if (isSuccess(imageData) && formData !== null) {
     return null
   }
 
-  if (isPending(imageData)) {
+  if (isPending(imageData) && beverage !== undefined) {
     return <h1>Brewing your {beverage.type}, please wait</h1>
   }
 
@@ -125,8 +131,7 @@ export default function Form({
         <section className="beverages-column">
           <p className="beverage-select-heading">Select your beverage</p>
           {items.map(item => {
-            const checked =
-              isSuccess<IBeverageItem, string>(beverage) && beverage.data.name === item.name
+            const checked: boolean = beverage !== undefined && beverage.name === item.name
             return (
               <ItemFormElement
                 key={item.name}
@@ -147,7 +152,7 @@ export default function Form({
                   name="strength"
                   id="lowstrength"
                   value="Low"
-                  checked={isSuccess(strength) && strength.data === 'Low'}
+                  checked={strength !== undefined && strength === 'Low'}
                   onChange={strengthOnChange}
                   label="Low"
                 />
@@ -155,7 +160,7 @@ export default function Form({
                   name="strength"
                   id="normalstrength"
                   value="Normal"
-                  checked={isSuccess(strength) && strength.data === 'Normal'}
+                  checked={strength !== undefined && strength === 'Normal'}
                   onChange={strengthOnChange}
                   label="Normal"
                 />
@@ -163,7 +168,7 @@ export default function Form({
                   name="strength"
                   id="strongstrength"
                   value="Strong"
-                  checked={isSuccess(strength) && strength.data === 'Strong'}
+                  checked={strength !== undefined && strength === 'Strong'}
                   onChange={strengthOnChange}
                   label="Strong"
                 />

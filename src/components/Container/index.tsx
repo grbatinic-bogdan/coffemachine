@@ -4,10 +4,10 @@ import BeverageResponse, { ImageDataResponse } from '../BeverageResponse'
 import './style.css'
 import { notAsked, IRemoteData } from '../../services/remoteData'
 import { formDataReducer, initialState } from '../Form/reducer'
-import { IBeverageItem } from '../..'
+import { BeverageItem } from '../..'
 
 interface ContainerProps {
-  items: IBeverageItem[]
+  items: BeverageItem[]
 }
 
 export default function Container({
