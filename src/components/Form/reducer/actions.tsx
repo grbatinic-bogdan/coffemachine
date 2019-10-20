@@ -1,5 +1,4 @@
 import { BeverageItem } from '../../..'
-import { success } from '../../../services/remoteData'
 
 export const SET_BEVERAGE_ACTION = 'SET_BEVERAGE'
 export const SET_STRENGTH_ACTION = 'SET_STRENGTH'

@@ -46,7 +46,7 @@ export default function BeverageResponse({
   const { data: imageData } = imageRemoteData
   return (
     <div>
-      <h1>You ordered {beverage && beverage.name}</h1>
+      <h1>You ordered {beverage.name}</h1>
       <p>Size: {size}</p>
       {strength && <p>Strength: {strength}</p>}
       {milk && <p>Milk: {milk}</p>}
