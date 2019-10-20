@@ -1,5 +1,5 @@
 import { BeverageItem } from '../../..'
-import { IRemoteData, success } from '../../../services/remoteData'
+import { success } from '../../../services/remoteData'
 
 export const SET_BEVERAGE_ACTION = 'SET_BEVERAGE'
 export const SET_STRENGTH_ACTION = 'SET_STRENGTH'
@@ -26,12 +26,12 @@ interface SetStrengthAction {
 
 interface SetSizeAction {
   type: typeof SET_SIZE_ACTION
-  data: IRemoteData<Size, string>
+  data: Size
 }
 
 interface SetMilkAction {
   type: typeof SET_MILK_ACTION
-  data: IRemoteData<Milk, string>
+  data: Milk
 }
 
 interface SetSugarAction {
@@ -77,14 +77,14 @@ export function setStrength(data: Strength): SetStrengthAction {
 export function setSize(data: Size): SetSizeAction {
   return {
     type: 'SET_SIZE',
-    data: success(data),
+    data: data,
   }
 }
 
 export function setMilk(data: Milk): SetMilkAction {
   return {
     type: 'SET_MILK',
-    data: success(data),
+    data: data,
   }
 }
 

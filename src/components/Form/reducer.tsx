@@ -1,4 +1,3 @@
-import { notAsked, IRemoteData } from '../../services/remoteData'
 import { BeverageItem } from '../..'
 import {
   Strength,
@@ -18,16 +17,16 @@ import {
 export interface FormReducerState {
   beverage: BeverageItem | undefined
   strength: Strength | undefined
-  size: IRemoteData<Size, string>
-  milk: IRemoteData<Milk, string>
+  size: Size | undefined
+  milk: Milk | undefined
   sugar: boolean
 }
 
 export const initialState: FormReducerState = {
   beverage: undefined,
   strength: undefined,
-  size: notAsked(),
-  milk: notAsked(),
+  size: undefined,
+  milk: undefined,
   sugar: false,
 }
 
@@ -66,7 +65,7 @@ export function formDataReducer(state: FormReducerState, action: ActionTypes): F
     case UNSET_MILK_ACTION:
       return {
         ...state,
-        milk: notAsked(),
+        milk: undefined,
       }
     case RESET_COFFEE_MACHINE_ACTION:
       return initialState

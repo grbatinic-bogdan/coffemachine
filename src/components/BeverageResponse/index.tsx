@@ -39,13 +39,7 @@ export default function BeverageResponse({
 }: BeverageResponseProps): React.FunctionComponentElement<BeverageResponseProps> | null {
   const { beverage, strength, size, milk, sugar } = beverageData
 
-  if (
-    !isSuccess(imageRemoteData) ||
-    beverage === undefined ||
-    strength === undefined ||
-    !isSuccess(size) ||
-    !isSuccess(milk)
-  ) {
+  if (!isSuccess(imageRemoteData) || beverage === undefined || size === undefined) {
     return null
   }
 
@@ -53,9 +47,9 @@ export default function BeverageResponse({
   return (
     <div>
       <h1>You ordered {beverage && beverage.name}</h1>
-      <p>Size: {size.data}</p>
+      <p>Size: {size}</p>
       {strength && <p>Strength: {strength}</p>}
-      {milk.data && <p>Milk: {milk.data}</p>}
+      {milk && <p>Milk: {milk}</p>}
       <p>Sugar: {sugar ? 'Yes' : 'No'}</p>
 
       {imageData && imageData.urls && imageData.urls.regular && (

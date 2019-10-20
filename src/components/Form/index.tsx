@@ -10,7 +10,6 @@ import {
   isSuccess,
   failure,
   IRemoteData,
-  isNotAsked,
 } from '../../services/remoteData'
 import { FormReducerState } from './reducer'
 import { BeverageItem } from '../..'
@@ -103,13 +102,13 @@ export default function Form({
     const hasStrength: boolean =
       beverage !== undefined &&
       ((beverage.type === 'coffee' && isStrengthSelected) ||
-        (beverage.type === 'tea' && isStrengthSelected))
+        (beverage.type === 'tea' && !isStrengthSelected))
     const hasMilk: boolean =
       beverage !== undefined &&
-      ((beverage.type === 'coffee' && isSuccess(milk)) ||
-        (beverage.type === 'tea' && isNotAsked(milk)))
+      ((beverage.type === 'coffee' && milk !== undefined) ||
+        (beverage.type === 'tea' && milk === undefined))
 
-    return beverage !== undefined && isSuccess(size) && hasStrength && hasMilk
+    return beverage !== undefined && size !== undefined && hasStrength && hasMilk
   }
 
   const showStrength: boolean = beverage !== undefined && beverage.type === COFFEE_TYPE
@@ -181,7 +180,7 @@ export default function Form({
               name="size"
               id="smallsize"
               value="Small"
-              checked={isSuccess(size) && size.data === 'Small'}
+              checked={size !== undefined && size === 'Small'}
               onChange={sizeOnChange}
               label="Small"
             />
@@ -189,7 +188,7 @@ export default function Form({
               name="size"
               id="normalsize"
               value="Normal"
-              checked={isSuccess(size) && size.data === 'Normal'}
+              checked={size !== undefined && size === 'Normal'}
               onChange={sizeOnChange}
               label="Normal"
             />
@@ -197,7 +196,7 @@ export default function Form({
               name="size"
               id="largesize"
               value="Large"
-              checked={isSuccess(size) && size.data === 'Large'}
+              checked={size !== undefined && size === 'Large'}
               onChange={sizeOnChange}
               label="Large"
             />
@@ -210,7 +209,7 @@ export default function Form({
                   name="milk"
                   id="nomilk"
                   value="No"
-                  checked={isSuccess(milk) && milk.data === 'No'}
+                  checked={milk !== undefined && milk === 'No'}
                   onChange={milkOnChange}
                   label="No"
                 />
@@ -218,7 +217,7 @@ export default function Form({
                   name="milk"
                   id="normalmilk"
                   value="Normal"
-                  checked={isSuccess(milk) && milk.data === 'Normal'}
+                  checked={milk !== undefined && milk === 'Normal'}
                   onChange={milkOnChange}
                   label="Normal"
                 />
@@ -226,7 +225,7 @@ export default function Form({
                   name="milk"
                   id="largemilk"
                   value="Large"
-                  checked={isSuccess(milk) && milk.data === 'Large'}
+                  checked={milk !== undefined && milk === 'Large'}
                   onChange={milkOnChange}
                   label="Large"
                 />

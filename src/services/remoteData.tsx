@@ -1,8 +1,3 @@
-// const NOT_ASKED_TYPE = 'NOT_ASKED'
-// const PENDING_TYPE = 'PENDING'
-// const SUCCESS_TYPE = 'SUCCESS'
-// const FAILURE_TYPE = 'FAILURE'
-
 export type IRemoteDataType = 'NOT_ASKED' | 'PENDING' | 'SUCCESS' | 'FAILURE'
 
 interface RemoteDataNotAsked {
